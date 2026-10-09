@@ -564,7 +564,7 @@ Players.PlayerAdded:Connect(applyESP)
 RunService.Heartbeat:Connect(function()
     if autoEquipGunEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
         local hrp = LocalPlayer.Character.HumanoidRootPart
-        for _, obj in ipairs(Workspace:GetDescendants()) do
+        for _, obj in ipairs(Workspace:GetChildren()) do
             if obj.Name == "Gun" or obj.Name == "Revolver" or obj.Name == "DropPickup" then
                 local handle = obj:FindFirstChild("Handle") or obj:FindFirstChild("Part") or (obj:IsA("BasePart") and obj)
                 if handle then
