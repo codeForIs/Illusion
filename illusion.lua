@@ -8,7 +8,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local espEnabled = true
 local namesEnabled = true
-local distanceEnabled = true
+local distanceEnabled = false
 local boxEnabled = false
 local tracersEnabled = false
 local gunEspEnabled = false
@@ -215,7 +215,7 @@ createButton("ESP", "Names: ON", true, function(btn)
     btn.BackgroundColor3 = namesEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
 end)
 
-createButton("ESP", "Distance: ON", true, function(btn)
+createButton("ESP", "Distance: OFF", false, function(btn)
     distanceEnabled = not distanceEnabled
     btn.Text = distanceEnabled and "Distance: ON" or "Distance: OFF"
     btn.BackgroundColor3 = distanceEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
@@ -274,7 +274,7 @@ createButton("VISUAL", "X-Ray: OFF", false, function(btn)
 end)
 
 createButton("COMBAT", "Aimbot (Coming Soon)", false, function() end)
-createButton("PLAYER", "Speed Boost (ComingSoon)", false, function() end)
+createButton("PLAYER", "Speed Boost (Coming Soon)", false, function() end)
 createButton("ANIMATIONS", "Custom Anim (Coming Soon)", false, function() end)
 createButton("SETTINGS", "Rejoin Server", false, function()
     game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
@@ -285,32 +285,8 @@ local function getRole(player)
     local backpack = player:FindFirstChildOfClass("Backpack")
     local character = player.Character
     
-    local hasGun = false
-    local hasKnife = false
-
-    local function checkItem(item)
-        if item:IsA("Tool") then
-            local n = item.Name:lower()
-            -- Четкая проверка на наличие конкретного оружия мурдерера или шерифа
-            if n == "knife" or n:find("knife") then
-                hasKnife = true
-            elseif n == "gun" or n == "revolver" or n:find("gun") or n:find("revolver") then
-                hasGun = true
-            end
-        end
-    end
-
-    if backpack then
-        for _, item in ipairs(backpack:GetChildren()) do
-            checkItem(item)
-        end
-    end
-
-    if character then
-        for _, item in ipairs(character:GetChildren()) do
-            checkItem(item)
-        end
-    end
+    local hasGun = (backpack and (backpack:FindFirstChild("Gun") or backpack:FindFirstChild("Revolver"))) or character:FindFirstChild("Gun") or character:FindFirstChild("Revolver")
+    local hasKnife = (backpack and backpack:FindFirstChild("Knife")) or character:FindFirstChild("Knife")
     
     if hasKnife then
         return "Murderer", Color3.fromRGB(255, 0, 0)
@@ -350,7 +326,7 @@ local function applyESP(player)
         local billboard = Instance.new("BillboardGui")
         billboard.Name = "MM2_ESP"
         billboard.Adornee = rootPart
-        billboard.Size = UDim2.new(0, 150, 0, 70)
+        billboard.Size = UDim2.new(0, 120, 0, 60)
         billboard.StudsOffset = Vector3.new(0, 3, 0)
         billboard.AlwaysOnTop = true
         billboard.MaxDistance = 9e9
