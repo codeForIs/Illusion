@@ -402,7 +402,24 @@ floatingShootBtn.MouseButton1Click:Connect(function()
             local role, _ = getRole(player)
             if role == "Murderer" and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 local mRoot = player.Character.HumanoidRootPart
-                Camera.CFrame = CFrame.new(Camera.CFrame.Position, mRoot.Position)
+                local char = LocalPlayer.Character
+                if char then
+                    local gun = char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") or (LocalPlayer.Backpack and (LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")))
+                    if gun and gun:IsA("Tool") then
+                        if gun.Parent ~= char then
+                            LocalPlayer.Character.Humanoid:EquipTool(gun)
+                        end
+                        if gun:FindFirstChild("Shoot") then
+                            gun.Shoot:FireServer(mRoot.Position, mRoot.Position)
+                        elseif gun:FindFirstChild("KnifeServer") then
+                            gun.KnifeServer:InvokeServer(mRoot.Position)
+                        else
+                            pcall(function()
+                                gun:Activate()
+                            end)
+                        end
+                    end
+                end
                 break
             end
         end
@@ -547,16 +564,16 @@ Players.PlayerAdded:Connect(applyESP)
 RunService.Heartbeat:Connect(function()
     if autoEquipGunEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
         local hrp = LocalPlayer.Character.HumanoidRootPart
-        local oldPos = hrp.CFrame
-        
         for _, obj in ipairs(Workspace:GetDescendants()) do
             if obj.Name == "Gun" or obj.Name == "Revolver" or obj.Name == "DropPickup" then
                 local handle = obj:FindFirstChild("Handle") or obj:FindFirstChild("Part") or (obj:IsA("BasePart") and obj)
                 if handle then
+                    local oldCFrame = hrp.CFrame
                     hrp.CFrame = handle.CFrame
-                    task.defer(function()
-                        hrp.CFrame = oldPos
-                    end)
+                    task.wait()
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = oldCFrame
+                    end
                     break
                 end
             end
