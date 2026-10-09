@@ -13,7 +13,7 @@ local boxEnabled = false
 local tracersEnabled = false
 local coinEspEnabled = false
 local xrayEnabled = false
-local hitboxEnabled = false
+local autoEquipGunEnabled = false
 local shootButtonEnabled = false
 
 local originalTransparency = {}
@@ -297,50 +297,14 @@ sheriffHeader.TextSize = 12
 sheriffHeader.Font = Enum.Font.GothamBold
 sheriffHeader.Parent = sheriffColumn
 
-createButton(sheriffColumn, "Hitboxes: OFF", false, function(btn)
-    hitboxEnabled = not hitboxEnabled
-    btn.Text = hitboxEnabled and "Hitboxes: ON" or "Hitboxes: OFF"
-    return hitboxEnabled
+-- Тумблер для Auto Selection
+createButton(sheriffColumn, "Auto Selection: OFF", false, function(btn)
+    autoEquipGunEnabled = not autoEquipGunEnabled
+    btn.Text = autoEquipGunEnabled and "Auto Selection: ON" or "Auto Selection: OFF"
+    return autoEquipGunEnabled
 end)
 
--- Мгновенный Auto Selection
-local autoGrabBtn = Instance.new("TextButton")
-autoGrabBtn.Size = UDim2.new(1, 0, 0, 38)
-autoGrabBtn.BackgroundColor3 = Color3.fromRGB(15, 14, 19)
-autoGrabBtn.TextColor3 = Color3.fromRGB(175, 175, 195)
-autoGrabBtn.TextSize = 11
-autoGrabBtn.Font = Enum.Font.GothamMedium
-autoGrabBtn.Text = "Auto Selection"
-autoGrabBtn.Parent = sheriffColumn
-
-local autoCorner = Instance.new("UICorner")
-autoCorner.CornerRadius = UDim.new(0, 8)
-autoCorner.Parent = autoGrabBtn
-
-local autoStroke = Instance.new("UIStroke")
-autoStroke.Color = Color3.fromRGB(30, 26, 45)
-autoStroke.Thickness = 1.2
-autoStroke.Parent = autoGrabBtn
-
-autoGrabBtn.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local hrp = LocalPlayer.Character.HumanoidRootPart
-        local oldPos = hrp.CFrame
-        for _, obj in ipairs(Workspace:GetChildren()) do
-            if obj.Name == "Gun" or obj.Name == "Revolver" then
-                local handle = obj:FindFirstChild("Handle") or (obj:IsA("BasePart") and obj)
-                if handle then
-                    hrp.CFrame = handle.CFrame
-                    task.wait(0.05)
-                    hrp.CFrame = oldPos
-                    break
-                end
-            end
-        end
-    end
-end)
-
--- Создаем саму плавающую кнопку Shoot на экране (изначально скрыта)
+-- Плавающая кнопка Shoot на экране (изначально скрыта)
 local floatingShootBtn = Instance.new("TextButton")
 floatingShootBtn.Name = "FloatingShootButton"
 floatingShootBtn.Size = UDim2.new(0, 110, 0, 45)
@@ -364,7 +328,7 @@ fStroke.Color = Color3.fromRGB(255, 75, 75)
 fStroke.Thickness = 1.5
 fStroke.Parent = floatingShootBtn
 
--- Тумблер для включения/выключения кнопки Shoot на экране
+-- Тумблер для отображения кнопки Shoot на экране
 createButton(sheriffColumn, "Shoot Button: OFF", false, function(btn)
     shootButtonEnabled = not shootButtonEnabled
     btn.Text = shootButtonEnabled and "Shoot Button: ON" or "Shoot Button: OFF"
@@ -441,13 +405,14 @@ local function getRole(player)
     end
 end
 
--- При нажатии на плавающую кнопку SHOOT камера мгновенно наводится на мардера
+-- Кнопка SHOOT: бьет строго в мардера без перевода камеры на остальных
 floatingShootBtn.MouseButton1Click:Connect(function()
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer then
             local role, _ = getRole(player)
             if role == "Murderer" and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 local mRoot = player.Character.HumanoidRootPart
+                -- Мгновенно выравниваем направление взгляда на мардера без дергания камеры игрока
                 Camera.CFrame = CFrame.new(Camera.CFrame.Position, mRoot.Position)
                 break
             end
@@ -592,19 +557,18 @@ end
 Players.PlayerAdded:Connect(applyESP)
 
 RunService.Heartbeat:Connect(function()
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character then
-            local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
-            if rootPart then
-                if hitboxEnabled then
-                    local _, color = getRole(player)
-                    rootPart.Size = Vector3.new(4, 4, 4)
-                    rootPart.Transparency = 0.7
-                    rootPart.Color = color
-                    rootPart.CanCollide = false
-                else
-                    rootPart.Size = Vector3.new(2, 2, 1)
-                    rootPart.Transparency = 1
+    -- Работа Auto Selection: моментальный подбор выпавшего пистолета без визуальных задержек
+    if autoEquipGunEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        for _, obj in ipairs(Workspace:GetChildren()) do
+            if obj.Name == "Gun" or obj.Name == "Revolver" then
+                local handle = obj:FindFirstChild("Handle") or (obj:IsA("BasePart") and obj)
+                if handle then
+                    local hrp = LocalPlayer.Character.HumanoidRootPart
+                    local oldPos = hrp.CFrame
+                    hrp.CFrame = handle.CFrame
+                    task.wait()
+                    hrp.CFrame = oldPos
+                    break
                 end
             end
         end
