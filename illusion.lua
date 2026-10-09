@@ -11,7 +11,6 @@ local namesEnabled = true
 local distanceEnabled = false
 local boxEnabled = false
 local tracersEnabled = false
-local gunEspEnabled = false
 local coinEspEnabled = false
 local xrayEnabled = false
 local hitboxEnabled = false
@@ -19,82 +18,95 @@ local hitboxEnabled = false
 local originalTransparency = {}
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "MM2_Menu"
+screenGui.Name = "Illusion_ModularUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = CoreGui
 
 local openButton = Instance.new("TextButton")
 openButton.Name = "OpenButton"
-openButton.Size = UDim2.new(0, 40, 0, 40)
+openButton.Size = UDim2.new(0, 45, 0, 45)
 openButton.Position = UDim2.new(0, 20, 0, 20)
-openButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+openButton.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
 openButton.BorderSizePixel = 0
-openButton.Text = "MM"
-openButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-openButton.TextSize = 14
+openButton.Text = "Illusion"
+openButton.TextColor3 = Color3.fromRGB(120, 110, 255)
+openButton.TextSize = 12
 openButton.Font = Enum.Font.GothamBold
 openButton.Visible = false
 openButton.Active = true
 openButton.Parent = screenGui
 
 local openCorner = Instance.new("UICorner")
-openCorner.CornerRadius = UDim.new(0, 8)
+openCorner.CornerRadius = UDim.new(0, 10)
 openCorner.Parent = openButton
+
+local openStroke = Instance.new("UIStroke")
+openStroke.Color = Color3.fromRGB(45, 42, 60)
+openStroke.Thickness = 1.5
+openStroke.Parent = openButton
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 320, 0, 280)
-mainFrame.Position = UDim2.new(0, 50, 0, 50)
-mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+mainFrame.Size = UDim2.new(0, 480, 0, 320)
+mainFrame.Position = UDim2.new(0.5, -240, 0.5, -160)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Parent = screenGui
 
 local frameCorner = Instance.new("UICorner")
-frameCorner.CornerRadius = UDim.new(0, 10)
+frameCorner.CornerRadius = UDim.new(0, 12)
 frameCorner.Parent = mainFrame
 
-local titleBar = Instance.new("TextButton")
+local frameStroke = Instance.new("UIStroke")
+frameStroke.Color = Color3.fromRGB(35, 33, 48)
+frameStroke.Thickness = 1.5
+frameStroke.Parent = mainFrame
+
+local titleBar = Instance.new("Frame")
 titleBar.Name = "TitleBar"
-titleBar.Size = UDim2.new(1, 0, 0, 35)
-titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-titleBar.Text = "  MM2 Hub"
-titleBar.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleBar.TextSize = 14
-titleBar.Font = Enum.Font.GothamBold
-titleBar.TextXAlignment = Enum.TextXAlignment.Left
+titleBar.Size = UDim2.new(1, 0, 0, 45)
+titleBar.BackgroundTransparency = 1
 titleBar.Parent = mainFrame
 
-local titleCorner = Instance.new("UICorner")
-titleCorner.CornerRadius = UDim.new(0, 10)
-titleCorner.Parent = titleBar
+local titleText = Instance.new("TextLabel")
+titleText.Size = UDim2.new(0, 200, 1, 0)
+titleText.Position = UDim2.new(0, 15, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "ILLUSION <font color='#786eff'>HUB</font>"
+titleText.RichText = true
+titleText.TextColor3 = Color3.fromRGB(240, 240, 250)
+titleText.TextSize = 15
+titleText.Font = Enum.Font.GothamBold
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.Parent = titleBar
 
 local collapseButton = Instance.new("TextButton")
 collapseButton.Name = "CollapseButton"
-collapseButton.Size = UDim2.new(0, 30, 0, 30)
-collapseButton.Position = UDim2.new(1, -35, 0, 2)
-collapseButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-collapseButton.Text = "X"
-collapseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-collapseButton.TextSize = 14
+collapseButton.Size = UDim2.new(0, 28, 0, 28)
+collapseButton.Position = UDim2.new(1, -38, 0.5, -14)
+collapseButton.BackgroundColor3 = Color3.fromRGB(25, 23, 33)
+collapseButton.Text = "—"
+collapseButton.TextColor3 = Color3.fromRGB(180, 180, 200)
+collapseButton.TextSize = 13
 collapseButton.Font = Enum.Font.GothamBold
 collapseButton.Parent = titleBar
 
 local collapseCorner = Instance.new("UICorner")
-collapseCorner.CornerRadius = UDim.new(0, 6)
+collapseCorner.CornerRadius = UDim.new(0, 8)
 collapseCorner.Parent = collapseButton
 
 local tabHolder = Instance.new("ScrollingFrame")
 tabHolder.Name = "TabHolder"
-tabHolder.Size = UDim2.new(0, 100, 1, -45)
-tabHolder.Position = UDim2.new(0, 5, 0, 40)
+tabHolder.Size = UDim2.new(0, 115, 1, -55)
+tabHolder.Position = UDim2.new(0, 12, 0, 45)
 tabHolder.BackgroundTransparency = 1
-tabHolder.ScrollBarThickness = 2
+tabHolder.ScrollBarThickness = 0
 tabHolder.Parent = mainFrame
 
 local tabLayout = Instance.new("UIListLayout")
 tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-tabLayout.Padding = UDim.new(0, 5)
+tabLayout.Padding = UDim.new(0, 6)
 tabLayout.Parent = tabHolder
 
 local containerHolder = Instance.new("Folder")
@@ -107,22 +119,23 @@ local pages = {}
 for i, tabName in ipairs(tabs) do
     local tabBtn = Instance.new("TextButton")
     tabBtn.Name = tabName .. "Tab"
-    tabBtn.Size = UDim2.new(1, 0, 0, 30)
-    tabBtn.BackgroundColor3 = (i == 1) and Color3.fromRGB(50, 50, 50) or Color3.fromRGB(35, 35, 35)
-    tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabBtn.Size = UDim2.new(1, 0, 0, 34)
+    tabBtn.BackgroundColor3 = (i == 1) and Color3.fromRGB(25, 23, 33) or Color3.fromRGB(18, 18, 22)
+    tabBtn.TextColor3 = (i == 1) and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(150, 150, 170)
     tabBtn.TextSize = 12
-    tabBtn.Font = Enum.Font.Gotham
-    tabBtn.Text = tabName
+    tabBtn.Font = Enum.Font.GothamBold
+    tabBtn.Text = "  " .. tabName
+    tabBtn.TextXAlignment = Enum.TextXAlignment.Left
     tabBtn.Parent = tabHolder
     
     local tabCorner = Instance.new("UICorner")
-    tabCorner.CornerRadius = UDim.new(0, 6)
+    tabCorner.CornerRadius = UDim.new(0, 8)
     tabCorner.Parent = tabBtn
 
     local page = Instance.new("ScrollingFrame")
     page.Name = tabName .. "Page"
-    page.Size = UDim2.new(1, -115, 1, -45)
-    page.Position = UDim2.new(0, 110, 0, 40)
+    page.Size = UDim2.new(1, -145, 1, -55)
+    page.Position = UDim2.new(0, 135, 0, 45)
     page.BackgroundTransparency = 1
     page.ScrollBarThickness = 2
     page.Visible = (i == 1)
@@ -138,7 +151,8 @@ for i, tabName in ipairs(tabs) do
     tabBtn.MouseButton1Click:Connect(function()
         for name, pData in pairs(pages) do
             pData.Page.Visible = (name == tabName)
-            pData.Button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(50, 50, 50) or Color3.fromRGB(35, 35, 35)
+            pData.Button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(25, 23, 33) or Color3.fromRGB(18, 18, 22)
+            pData.Button.TextColor3 = (name == tabName) and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(150, 150, 170)
         end
     end)
 end
@@ -185,76 +199,95 @@ openButton.MouseButton1Click:Connect(function()
 end)
 local function createButton(tabName, text, defaultState, callback)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -5, 0, 35)
-    btn.BackgroundColor3 = defaultState and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 13
-    btn.Font = Enum.Font.Gotham
+    btn.Size = UDim2.new(1, -5, 0, 36)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 19, 26)
+    btn.TextColor3 = defaultState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(180, 180, 200)
+    btn.TextSize = 12
+    btn.Font = Enum.Font.GothamMedium
     btn.Text = text
     btn.Parent = pages[tabName].Page
 
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
+    corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = btn
 
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = defaultState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(35, 33, 48)
+    stroke.Thickness = 1
+    stroke.Parent = btn
+
     btn.MouseButton1Click:Connect(function()
-        callback(btn)
+        local newState = callback(btn)
+        if newState ~= nil then
+            stroke.Color = newState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(35, 33, 48)
+            btn.TextColor3 = newState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(180, 180, 200)
+        end
     end)
     return btn
+end
+
+local function createSection(tabName, titleText)
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, -5, 0, 22)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = "  " .. titleText:upper()
+    lbl.TextColor3 = Color3.fromRGB(90, 85, 120)
+    lbl.TextSize = 11
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = pages[tabName].Page
 end
 
 createButton("ESP", "ESP: ON", true, function(btn)
     espEnabled = not espEnabled
     btn.Text = espEnabled and "ESP: ON" or "ESP: OFF"
-    btn.BackgroundColor3 = espEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
+    return espEnabled
 end)
 
 createButton("ESP", "Names: ON", true, function(btn)
     namesEnabled = not namesEnabled
     btn.Text = namesEnabled and "Names: ON" or "Names: OFF"
-    btn.BackgroundColor3 = namesEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
+    return namesEnabled
 end)
 
 createButton("ESP", "Distance: OFF", false, function(btn)
     distanceEnabled = not distanceEnabled
     btn.Text = distanceEnabled and "Distance: ON" or "Distance: OFF"
-    btn.BackgroundColor3 = distanceEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
+    return distanceEnabled
 end)
 
 createButton("ESP", "Boxes: OFF", false, function(btn)
     boxEnabled = not boxEnabled
     btn.Text = boxEnabled and "Boxes: ON" or "Boxes: OFF"
-    btn.BackgroundColor3 = boxEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
+    return boxEnabled
 end)
 
 createButton("ESP", "Tracers: OFF", false, function(btn)
     tracersEnabled = not tracersEnabled
     btn.Text = tracersEnabled and "Tracers: ON" or "Tracers: OFF"
-    btn.BackgroundColor3 = tracersEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
-end)
-
-createButton("ESP", "ESP Gun: OFF", false, function(btn)
-    gunEspEnabled = not gunEspEnabled
-    btn.Text = gunEspEnabled and "ESP Gun: ON" or "ESP Gun: OFF"
-    btn.BackgroundColor3 = gunEspEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
+    return tracersEnabled
 end)
 
 createButton("ESP", "Coin ESP: OFF", false, function(btn)
     coinEspEnabled = not coinEspEnabled
     btn.Text = coinEspEnabled and "Coin ESP: ON" or "Coin ESP: OFF"
-    btn.BackgroundColor3 = coinEspEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
+    return coinEspEnabled
 end)
 
+-- РАЗДЕЛЕНИЕ COMBAT НА SHERIFF И MURDERER
+createSection("COMBAT", "Sheriff")
 createButton("COMBAT", "Hitboxes: OFF", false, function(btn)
     hitboxEnabled = not hitboxEnabled
     btn.Text = hitboxEnabled and "Hitboxes: ON" or "Hitboxes: OFF"
-    btn.BackgroundColor3 = hitboxEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
+    return hitboxEnabled
 end)
+
+createSection("COMBAT", "Murderer")
+createButton("COMBAT", "Aimbot (Coming Soon)", false, function() end)
 
 createButton("VISUAL", "X-Ray: OFF", false, function(btn)
     xrayEnabled = not xrayEnabled
     btn.Text = xrayEnabled and "X-Ray: ON" or "X-Ray: OFF"
-    btn.BackgroundColor3 = xrayEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
     
     if xrayEnabled then
         for _, part in ipairs(Workspace:GetDescendants()) do
@@ -271,9 +304,9 @@ createButton("VISUAL", "X-Ray: OFF", false, function(btn)
         end
         originalTransparency = {}
     end
+    return xrayEnabled
 end)
 
-createButton("COMBAT", "Aimbot (Coming Soon)", false, function() end)
 createButton("PLAYER", "Speed Boost (Coming Soon)", false, function() end)
 createButton("ANIMATIONS", "Custom Anim (Coming Soon)", false, function() end)
 createButton("SETTINGS", "Rejoin Server", false, function()
@@ -453,48 +486,6 @@ RunService.Heartbeat:Connect(function()
     end
 
     for _, obj in ipairs(Workspace:GetDescendants()) do
-        if obj.Name == "GunDrop" then
-            if gunEspEnabled then
-                if not obj:FindFirstChild("GunHighlight") and (obj:IsA("Model") or obj:IsA("BasePart")) then
-                    local gunHighlight = Instance.new("Highlight")
-                    gunHighlight.Name = "GunHighlight"
-                    gunHighlight.Adornee = obj
-                    gunHighlight.FillColor = Color3.fromRGB(255, 255, 0)
-                    gunHighlight.FillTransparency = 0.3
-                    gunHighlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                    gunHighlight.Parent = obj
-
-                    local partToAdorn = obj:IsA("Model") and obj.PrimaryPart or obj
-                    if partToAdorn then
-                        local billboard = Instance.new("BillboardGui")
-                        billboard.Name = "GunTag"
-                        billboard.Adornee = partToAdorn
-                        billboard.Size = UDim2.new(0, 90, 0, 35)
-                        billboard.StudsOffset = Vector3.new(0, 2, 0)
-                        billboard.AlwaysOnTop = true
-                        billboard.MaxDistance = 9e9
-
-                        local txt = Instance.new("TextLabel")
-                        txt.Size = UDim2.new(1, 0, 1, 0)
-                        txt.BackgroundTransparency = 1
-                        txt.TextScaled = true
-                        txt.Font = Enum.Font.SourceSansBold
-                        txt.Text = "DROP GUN"
-                        txt.TextColor3 = Color3.fromRGB(255, 255, 0)
-                        txt.TextStrokeTransparency = 0
-                        txt.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-                        txt.Parent = billboard
-                        billboard.Parent = obj
-                    end
-                end
-            else
-                local hl = obj:FindFirstChild("GunHighlight")
-                if hl then hl:Destroy() end
-                local tag = obj:FindFirstChild("GunTag")
-                if tag then tag:Destroy() end
-            end
-        end
-
         if obj.Name == "Coin_Server" or obj.Name:lower():find("coin") or obj.Name:lower():find("idiot") then
             if coinEspEnabled then
                 if not obj:FindFirstChild("CoinHighlight") and (obj:IsA("Model") or obj:IsA("BasePart")) then
