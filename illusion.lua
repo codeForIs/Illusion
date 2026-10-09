@@ -267,15 +267,12 @@ createStandardButton("ESP", "Coin ESP: OFF", false, function(btn)
     return coinEspEnabled
 end)
 
--- РАЗДЕЛЕНИЕ COMBAT НА ДВЕ КОЛОНКИ: SHERIFF | MURDER
 local combatPage = pages["COMBAT"].Page
-
 local combatContainer = Instance.new("Frame")
 combatContainer.Size = UDim2.new(1, -5, 0, 260)
 combatContainer.BackgroundTransparency = 1
 combatContainer.Parent = combatPage
 
--- Левая колонка: SHERIFF
 local sheriffColumn = Instance.new("ScrollingFrame")
 sheriffColumn.Size = UDim2.new(0.48, 0, 1, 0)
 sheriffColumn.Position = UDim2.new(0, 0, 0, 0)
@@ -297,14 +294,12 @@ sheriffHeader.TextSize = 12
 sheriffHeader.Font = Enum.Font.GothamBold
 sheriffHeader.Parent = sheriffColumn
 
--- Тумблер для Auto Selection
 createButton(sheriffColumn, "Auto Selection: OFF", false, function(btn)
     autoEquipGunEnabled = not autoEquipGunEnabled
     btn.Text = autoEquipGunEnabled and "Auto Selection: ON" or "Auto Selection: OFF"
     return autoEquipGunEnabled
 end)
 
--- Плавающая кнопка Shoot на экране (изначально скрыта)
 local floatingShootBtn = Instance.new("TextButton")
 floatingShootBtn.Name = "FloatingShootButton"
 floatingShootBtn.Size = UDim2.new(0, 110, 0, 45)
@@ -328,7 +323,6 @@ fStroke.Color = Color3.fromRGB(255, 75, 75)
 fStroke.Thickness = 1.5
 fStroke.Parent = floatingShootBtn
 
--- Тумблер для отображения кнопки Shoot на экране
 createButton(sheriffColumn, "Shoot Button: OFF", false, function(btn)
     shootButtonEnabled = not shootButtonEnabled
     btn.Text = shootButtonEnabled and "Shoot Button: ON" or "Shoot Button: OFF"
@@ -336,7 +330,6 @@ createButton(sheriffColumn, "Shoot Button: OFF", false, function(btn)
     return shootButtonEnabled
 end)
 
--- Правая колонка: MURDER
 local murderColumn = Instance.new("ScrollingFrame")
 murderColumn.Size = UDim2.new(0.48, 0, 1, 0)
 murderColumn.Position = UDim2.new(0.52, 0, 0, 0)
@@ -389,10 +382,8 @@ createStandardButton("SETTINGS", "Rejoin Server", false, function()
 end)
 local function getRole(player)
     if not player.Character then return "Innocent", Color3.fromRGB(0, 255, 0) end
-    
     local backpack = player:FindFirstChildOfClass("Backpack")
     local character = player.Character
-    
     local hasGun = (backpack and (backpack:FindFirstChild("Gun") or backpack:FindFirstChild("Revolver"))) or character:FindFirstChild("Gun") or character:FindFirstChild("Revolver")
     local hasKnife = (backpack and backpack:FindFirstChild("Knife")) or character:FindFirstChild("Knife")
     
@@ -405,14 +396,12 @@ local function getRole(player)
     end
 end
 
--- Кнопка SHOOT: бьет строго в мардера без перевода камеры на остальных
 floatingShootBtn.MouseButton1Click:Connect(function()
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer then
             local role, _ = getRole(player)
             if role == "Murderer" and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 local mRoot = player.Character.HumanoidRootPart
-                -- Мгновенно выравниваем направление взгляда на мардера без дергания камеры игрока
                 Camera.CFrame = CFrame.new(Camera.CFrame.Position, mRoot.Position)
                 break
             end
@@ -506,7 +495,6 @@ local function applyESP(player)
                 if onScreen then
                     local height = 2500 / vector.Z
                     local width = height / 2
-                    
                     box.Size = Vector2.new(width, height)
                     box.Position = Vector2.new(vector.X - width / 2, vector.Y - height / 2)
                     box.Color = color
@@ -557,17 +545,18 @@ end
 Players.PlayerAdded:Connect(applyESP)
 
 RunService.Heartbeat:Connect(function()
-    -- Работа Auto Selection: моментальный подбор выпавшего пистолета без визуальных задержек
     if autoEquipGunEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        for _, obj in ipairs(Workspace:GetChildren()) do
-            if obj.Name == "Gun" or obj.Name == "Revolver" then
-                local handle = obj:FindFirstChild("Handle") or (obj:IsA("BasePart") and obj)
+        local hrp = LocalPlayer.Character.HumanoidRootPart
+        local oldPos = hrp.CFrame
+        
+        for _, obj in ipairs(Workspace:GetDescendants()) do
+            if obj.Name == "Gun" or obj.Name == "Revolver" or obj.Name == "DropPickup" then
+                local handle = obj:FindFirstChild("Handle") or obj:FindFirstChild("Part") or (obj:IsA("BasePart") and obj)
                 if handle then
-                    local hrp = LocalPlayer.Character.HumanoidRootPart
-                    local oldPos = hrp.CFrame
                     hrp.CFrame = handle.CFrame
-                    task.wait()
-                    hrp.CFrame = oldPos
+                    task.defer(function()
+                        hrp.CFrame = oldPos
+                    end)
                     break
                 end
             end
