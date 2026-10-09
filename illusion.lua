@@ -6,9 +6,9 @@ local Camera = workspace.CurrentCamera
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
-local espEnabled = false
+local espEnabled = true
 local namesEnabled = true
-local distanceEnabled = false
+local distanceEnabled = true
 local boxEnabled = false
 local tracersEnabled = false
 local gunEspEnabled = false
@@ -203,7 +203,7 @@ local function createButton(tabName, text, defaultState, callback)
     return btn
 end
 
-createButton("ESP", "ESP: OFF", false, function(btn)
+createButton("ESP", "ESP: ON", true, function(btn)
     espEnabled = not espEnabled
     btn.Text = espEnabled and "ESP: ON" or "ESP: OFF"
     btn.BackgroundColor3 = espEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
@@ -215,7 +215,7 @@ createButton("ESP", "Names: ON", true, function(btn)
     btn.BackgroundColor3 = namesEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
 end)
 
-createButton("ESP", "Distance: OFF", false, function(btn)
+createButton("ESP", "Distance: ON", true, function(btn)
     distanceEnabled = not distanceEnabled
     btn.Text = distanceEnabled and "Distance: ON" or "Distance: OFF"
     btn.BackgroundColor3 = distanceEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(45, 45, 45)
@@ -285,8 +285,25 @@ local function getRole(player)
     local backpack = player:FindFirstChildOfClass("Backpack")
     local character = player.Character
     
-    local hasGun = (backpack and (backpack:FindFirstChild("Gun") or backpack:FindFirstChild("Revolver"))) or character:FindFirstChild("Gun") or character:FindFirstChild("Revolver")
-    local hasKnife = (backpack and backpack:FindFirstChild("Knife")) or character:FindFirstChild("Knife")
+    local hasGun = false
+    local hasKnife = false
+
+    -- Глубокая проверка рюкзака и персонажа на наличие оружия (срабатывает сразу на 10-секундном таймере)
+    if backpack then
+        for _, item in ipairs(backpack:GetChildren()) do
+            local name = item.Name:lower()
+            if name:find("gun") or name:find("revolver") then hasGun = true end
+            if name:find("knife") then hasKnife = true end
+        end
+    end
+
+    if character then
+        for _, item in ipairs(character:GetChildren()) do
+            local name = item.Name:lower()
+            if name:find("gun") or name:find("revolver") then hasGun = true end
+            if name:find("knife") then hasKnife = true end
+        end
+    end
     
     if hasKnife then
         return "Murderer", Color3.fromRGB(255, 0, 0)
@@ -326,9 +343,10 @@ local function applyESP(player)
         local billboard = Instance.new("BillboardGui")
         billboard.Name = "MM2_ESP"
         billboard.Adornee = rootPart
-        billboard.Size = UDim2.new(0, 120, 0, 60)
+        billboard.Size = UDim2.new(0, 150, 0, 70)
         billboard.StudsOffset = Vector3.new(0, 3, 0)
         billboard.AlwaysOnTop = true
+        billboard.MaxDistance = 9e9
 
         local textLabel = Instance.new("TextLabel")
         textLabel.Name = "Info"
@@ -451,10 +469,10 @@ RunService.Heartbeat:Connect(function()
         end
     end
 
-    for _, obj in ipairs(Workspace:GetChildren()) do
+    for _, obj in ipairs(Workspace:GetDescendants()) do
         if obj.Name == "GunDrop" then
             if gunEspEnabled then
-                if not obj:FindFirstChild("GunHighlight") then
+                if not obj:FindFirstChild("GunHighlight") and (obj:IsA("Model") or obj:IsA("BasePart")) then
                     local gunHighlight = Instance.new("Highlight")
                     gunHighlight.Name = "GunHighlight"
                     gunHighlight.Adornee = obj
@@ -463,24 +481,28 @@ RunService.Heartbeat:Connect(function()
                     gunHighlight.OutlineColor = Color3.fromRGB(255, 255, 255)
                     gunHighlight.Parent = obj
 
-                    local billboard = Instance.new("BillboardGui")
-                    billboard.Name = "GunTag"
-                    billboard.Adornee = obj
-                    billboard.Size = UDim2.new(0, 80, 0, 30)
-                    billboard.StudsOffset = Vector3.new(0, 2, 0)
-                    billboard.AlwaysOnTop = true
+                    local partToAdorn = obj:IsA("Model") and obj.PrimaryPart or obj
+                    if partToAdorn then
+                        local billboard = Instance.new("BillboardGui")
+                        billboard.Name = "GunTag"
+                        billboard.Adornee = partToAdorn
+                        billboard.Size = UDim2.new(0, 90, 0, 35)
+                        billboard.StudsOffset = Vector3.new(0, 2, 0)
+                        billboard.AlwaysOnTop = true
+                        billboard.MaxDistance = 9e9
 
-                    local txt = Instance.new("TextLabel")
-                    txt.Size = UDim2.new(1, 0, 1, 0)
-                    txt.BackgroundTransparency = 1
-                    txt.TextScaled = true
-                    txt.Font = Enum.Font.SourceSansBold
-                    txt.Text = "DROP GUN"
-                    txt.TextColor3 = Color3.fromRGB(255, 255, 0)
-                    txt.TextStrokeTransparency = 0
-                    txt.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-                    txt.Parent = billboard
-                    billboard.Parent = obj
+                        local txt = Instance.new("TextLabel")
+                        txt.Size = UDim2.new(1, 0, 1, 0)
+                        txt.BackgroundTransparency = 1
+                        txt.TextScaled = true
+                        txt.Font = Enum.Font.SourceSansBold
+                        txt.Text = "DROP GUN"
+                        txt.TextColor3 = Color3.fromRGB(255, 255, 0)
+                        txt.TextStrokeTransparency = 0
+                        txt.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+                        txt.Parent = billboard
+                        billboard.Parent = obj
+                    end
                 end
             else
                 local hl = obj:FindFirstChild("GunHighlight")
