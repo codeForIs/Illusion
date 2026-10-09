@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = workspace.CurrentCamera
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
@@ -403,20 +404,20 @@ floatingShootBtn.MouseButton1Click:Connect(function()
             if role == "Murderer" and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 local mRoot = player.Character.HumanoidRootPart
                 local char = LocalPlayer.Character
-                if char then
-                    local gun = char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") or (LocalPlayer.Backpack and (LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")))
-                    if gun and gun:IsA("Tool") then
+                if char and char:FindFirstChild("Humanoid") then
+                    local gun = char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") or (LocalPlayer:FindFirstChildOfClass("Backpack") and (LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")))
+                    if gun then
                         if gun.Parent ~= char then
-                            LocalPlayer.Character.Humanoid:EquipTool(gun)
+                            char.Humanoid:EquipTool(gun)
+                            task.wait(0.05)
                         end
-                        if gun:FindFirstChild("Shoot") then
-                            gun.Shoot:FireServer(mRoot.Position, mRoot.Position)
-                        elseif gun:FindFirstChild("KnifeServer") then
-                            gun.KnifeServer:InvokeServer(mRoot.Position)
+                        local shootRemote = gun:FindFirstChild("Shoot") or gun:FindFirstChild("GunRemote") or ReplicatedStorage:FindFirstChild("Shoot")
+                        if shootRemote and shootRemote:IsA("RemoteEvent") then
+                            shootRemote:FireServer(mRoot.Position, mRoot.Position)
+                        elseif shootRemote and shootRemote:IsA("RemoteFunction") then
+                            shootRemote:InvokeServer(mRoot.Position, mRoot.Position)
                         else
-                            pcall(function()
-                                gun:Activate()
-                            end)
+                            gun:Activate()
                         end
                     end
                 end
@@ -563,18 +564,21 @@ Players.PlayerAdded:Connect(applyESP)
 
 RunService.Heartbeat:Connect(function()
     if autoEquipGunEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local hrp = LocalPlayer.Character.HumanoidRootPart
-        for _, obj in ipairs(Workspace:GetChildren()) do
-            if obj.Name == "Gun" or obj.Name == "Revolver" or obj.Name == "DropPickup" then
-                local handle = obj:FindFirstChild("Handle") or obj:FindFirstChild("Part") or (obj:IsA("BasePart") and obj)
-                if handle then
-                    local oldCFrame = hrp.CFrame
-                    hrp.CFrame = handle.CFrame
-                    task.wait()
-                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                        LocalPlayer.Character.HumanoidRootPart.CFrame = oldCFrame
+        local hasGunInInv = LocalPlayer.Character:FindFirstChild("Gun") or LocalPlayer.Character:FindFirstChild("Revolver") or (LocalPlayer:FindFirstChildOfClass("Backpack") and (LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")))
+        if not hasGunInInv then
+            local hrp = LocalPlayer.Character.HumanoidRootPart
+            for _, obj in ipairs(Workspace:GetChildren()) do
+                if (obj.Name == "Gun" or obj.Name == "Revolver" or obj.Name == "DropPickup") and not obj:FindFirstChildOfClass("Humanoid") then
+                    local handle = obj:FindFirstChild("Handle") or obj:FindFirstChild("Part") or (obj:IsA("BasePart") and obj)
+                    if handle then
+                        local oldCFrame = hrp.CFrame
+                        hrp.CFrame = handle.CFrame
+                        task.wait()
+                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                            LocalPlayer.Character.HumanoidRootPart.CFrame = oldCFrame
+                        end
+                        break
                     end
-                    break
                 end
             end
         end
