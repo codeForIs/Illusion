@@ -451,7 +451,45 @@ RunService.Heartbeat:Connect(function()
         end
     end
 
-    for _, obj in ipairs(Workspace:GetDescendants()) do
+    for _, obj in ipairs(Workspace:GetChildren()) do
+        if obj.Name == "GunDrop" then
+            if gunEspEnabled then
+                if not obj:FindFirstChild("GunHighlight") then
+                    local gunHighlight = Instance.new("Highlight")
+                    gunHighlight.Name = "GunHighlight"
+                    gunHighlight.Adornee = obj
+                    gunHighlight.FillColor = Color3.fromRGB(255, 255, 0)
+                    gunHighlight.FillTransparency = 0.3
+                    gunHighlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                    gunHighlight.Parent = obj
+
+                    local billboard = Instance.new("BillboardGui")
+                    billboard.Name = "GunTag"
+                    billboard.Adornee = obj
+                    billboard.Size = UDim2.new(0, 80, 0, 30)
+                    billboard.StudsOffset = Vector3.new(0, 2, 0)
+                    billboard.AlwaysOnTop = true
+
+                    local txt = Instance.new("TextLabel")
+                    txt.Size = UDim2.new(1, 0, 1, 0)
+                    txt.BackgroundTransparency = 1
+                    txt.TextScaled = true
+                    txt.Font = Enum.Font.SourceSansBold
+                    txt.Text = "DROP GUN"
+                    txt.TextColor3 = Color3.fromRGB(255, 255, 0)
+                    txt.TextStrokeTransparency = 0
+                    txt.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+                    txt.Parent = billboard
+                    billboard.Parent = obj
+                end
+            else
+                local hl = obj:FindFirstChild("GunHighlight")
+                if hl then hl:Destroy() end
+                local tag = obj:FindFirstChild("GunTag")
+                if tag then tag:Destroy() end
+            end
+        end
+
         if obj.Name == "Coin_Server" or obj.Name:lower():find("coin") or obj.Name:lower():find("idiot") then
             if coinEspEnabled then
                 if not obj:FindFirstChild("CoinHighlight") and (obj:IsA("Model") or obj:IsA("BasePart")) then
