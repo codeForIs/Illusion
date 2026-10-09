@@ -24,68 +24,68 @@ screenGui.Parent = CoreGui
 
 local openButton = Instance.new("TextButton")
 openButton.Name = "OpenButton"
-openButton.Size = UDim2.new(0, 45, 0, 45)
-openButton.Position = UDim2.new(0, 20, 0, 20)
+openButton.Size = UDim2.new(0, 48, 0, 48)
+openButton.Position = UDim2.new(0, 25, 0, 25)
 openButton.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
 openButton.BorderSizePixel = 0
-openButton.Text = "Illusion"
-openButton.TextColor3 = Color3.fromRGB(120, 110, 255)
-openButton.TextSize = 12
+openButton.Text = "ILLUSION"
+openButton.TextColor3 = Color3.fromRGB(130, 110, 255)
+openButton.TextSize = 10
 openButton.Font = Enum.Font.GothamBold
 openButton.Visible = false
 openButton.Active = true
 openButton.Parent = screenGui
 
 local openCorner = Instance.new("UICorner")
-openCorner.CornerRadius = UDim.new(0, 10)
+openCorner.CornerRadius = UDim.new(0, 12)
 openCorner.Parent = openButton
 
 local openStroke = Instance.new("UIStroke")
-openStroke.Color = Color3.fromRGB(45, 42, 60)
+openStroke.Color = Color3.fromRGB(50, 45, 80)
 openStroke.Thickness = 1.5
 openStroke.Parent = openButton
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 480, 0, 320)
-mainFrame.Position = UDim2.new(0.5, -240, 0.5, -160)
-mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+mainFrame.Size = UDim2.new(0, 500, 0, 335)
+mainFrame.Position = UDim2.new(0.5, -250, 0.5, -167)
+mainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 15)
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Parent = screenGui
 
 local frameCorner = Instance.new("UICorner")
-frameCorner.CornerRadius = UDim.new(0, 12)
-frameCorner.Parent = mainFrame
+frameCorner.CornerRadius = UDim.new(0, 14)
+mainFrame.Parent = screenGui
 
 local frameStroke = Instance.new("UIStroke")
-frameStroke.Color = Color3.fromRGB(35, 33, 48)
+frameStroke.Color = Color3.fromRGB(35, 32, 50)
 frameStroke.Thickness = 1.5
 frameStroke.Parent = mainFrame
 
 local titleBar = Instance.new("Frame")
 titleBar.Name = "TitleBar"
-titleBar.Size = UDim2.new(1, 0, 0, 45)
+titleBar.Size = UDim2.new(1, 0, 0, 50)
 titleBar.BackgroundTransparency = 1
 titleBar.Parent = mainFrame
 
 local titleText = Instance.new("TextLabel")
-titleText.Size = UDim2.new(0, 200, 1, 0)
-titleText.Position = UDim2.new(0, 15, 0, 0)
+titleText.Size = UDim2.new(0, 250, 1, 0)
+titleText.Position = UDim2.new(0, 18, 0, 0)
 titleText.BackgroundTransparency = 1
-titleText.Text = "ILLUSION <font color='#786eff'>HUB</font>"
+titleText.Text = "ILLUSION <font color='#826eff'>HUB</font>"
 titleText.RichText = true
 titleText.TextColor3 = Color3.fromRGB(240, 240, 250)
-titleText.TextSize = 15
+titleText.TextSize = 16
 titleText.Font = Enum.Font.GothamBold
 titleText.TextXAlignment = Enum.TextXAlignment.Left
 titleText.Parent = titleBar
 
 local collapseButton = Instance.new("TextButton")
 collapseButton.Name = "CollapseButton"
-collapseButton.Size = UDim2.new(0, 28, 0, 28)
-collapseButton.Position = UDim2.new(1, -38, 0.5, -14)
-collapseButton.BackgroundColor3 = Color3.fromRGB(25, 23, 33)
+collapseButton.Size = UDim2.new(0, 30, 0, 30)
+collapseButton.Position = UDim2.new(1, -42, 0.5, -15)
+collapseButton.BackgroundColor3 = Color3.fromRGB(20, 19, 26)
 collapseButton.Text = "—"
 collapseButton.TextColor3 = Color3.fromRGB(180, 180, 200)
 collapseButton.TextSize = 13
@@ -98,8 +98,8 @@ collapseCorner.Parent = collapseButton
 
 local tabHolder = Instance.new("ScrollingFrame")
 tabHolder.Name = "TabHolder"
-tabHolder.Size = UDim2.new(0, 115, 1, -55)
-tabHolder.Position = UDim2.new(0, 12, 0, 45)
+tabHolder.Size = UDim2.new(0, 125, 1, -60)
+tabHolder.Position = UDim2.new(0, 14, 0, 50)
 tabHolder.BackgroundTransparency = 1
 tabHolder.ScrollBarThickness = 0
 tabHolder.Parent = mainFrame
@@ -119,23 +119,23 @@ local pages = {}
 for i, tabName in ipairs(tabs) do
     local tabBtn = Instance.new("TextButton")
     tabBtn.Name = tabName .. "Tab"
-    tabBtn.Size = UDim2.new(1, 0, 0, 34)
-    tabBtn.BackgroundColor3 = (i == 1) and Color3.fromRGB(25, 23, 33) or Color3.fromRGB(18, 18, 22)
-    tabBtn.TextColor3 = (i == 1) and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(150, 150, 170)
+    tabBtn.Size = UDim2.new(1, 0, 0, 36)
+    tabBtn.BackgroundColor3 = (i == 1) and Color3.fromRGB(22, 20, 30) or Color3.fromRGB(15, 15, 18)
+    tabBtn.TextColor3 = (i == 1) and Color3.fromRGB(130, 110, 255) or Color3.fromRGB(140, 140, 160)
     tabBtn.TextSize = 12
     tabBtn.Font = Enum.Font.GothamBold
-    tabBtn.Text = "  " .. tabName
+    tabBtn.Text = "   " .. tabName
     tabBtn.TextXAlignment = Enum.TextXAlignment.Left
     tabBtn.Parent = tabHolder
     
     local tabCorner = Instance.new("UICorner")
-    tabCorner.CornerRadius = UDim.new(0, 8)
+    tabCorner.CornerRadius = UDim.new(0, 10)
     tabCorner.Parent = tabBtn
 
     local page = Instance.new("ScrollingFrame")
     page.Name = tabName .. "Page"
-    page.Size = UDim2.new(1, -145, 1, -55)
-    page.Position = UDim2.new(0, 135, 0, 45)
+    page.Size = UDim2.new(1, -155, 1, -60)
+    page.Position = UDim2.new(0, 145, 0, 50)
     page.BackgroundTransparency = 1
     page.ScrollBarThickness = 2
     page.Visible = (i == 1)
@@ -151,8 +151,8 @@ for i, tabName in ipairs(tabs) do
     tabBtn.MouseButton1Click:Connect(function()
         for name, pData in pairs(pages) do
             pData.Page.Visible = (name == tabName)
-            pData.Button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(25, 23, 33) or Color3.fromRGB(18, 18, 22)
-            pData.Button.TextColor3 = (name == tabName) and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(150, 150, 170)
+            pData.Button.BackgroundColor3 = (name == tabName) and Color3.fromRGB(22, 20, 30) or Color3.fromRGB(15, 15, 18)
+            pData.Button.TextColor3 = (name == tabName) and Color3.fromRGB(130, 110, 255) or Color3.fromRGB(140, 140, 160)
         end
     end)
 end
@@ -199,9 +199,9 @@ openButton.MouseButton1Click:Connect(function()
 end)
 local function createButton(tabName, text, defaultState, callback)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -5, 0, 36)
-    btn.BackgroundColor3 = Color3.fromRGB(20, 19, 26)
-    btn.TextColor3 = defaultState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(180, 180, 200)
+    btn.Size = UDim2.new(1, -5, 0, 38)
+    btn.BackgroundColor3 = Color3.fromRGB(17, 16, 22)
+    btn.TextColor3 = defaultState and Color3.fromRGB(130, 110, 255) or Color3.fromRGB(170, 170, 190)
     btn.TextSize = 12
     btn.Font = Enum.Font.GothamMedium
     btn.Text = text
@@ -212,30 +212,48 @@ local function createButton(tabName, text, defaultState, callback)
     corner.Parent = btn
 
     local stroke = Instance.new("UIStroke")
-    stroke.Color = defaultState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(35, 33, 48)
+    stroke.Color = defaultState and Color3.fromRGB(130, 110, 255) or Color3.fromRGB(30, 28, 42)
     stroke.Thickness = 1
     stroke.Parent = btn
 
     btn.MouseButton1Click:Connect(function()
         local newState = callback(btn)
         if newState ~= nil then
-            stroke.Color = newState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(35, 33, 48)
-            btn.TextColor3 = newState and Color3.fromRGB(120, 110, 255) or Color3.fromRGB(180, 180, 200)
+            stroke.Color = newState and Color3.fromRGB(130, 110, 255) or Color3.fromRGB(30, 28, 42)
+            btn.TextColor3 = newState and Color3.fromRGB(130, 110, 255) or Color3.fromRGB(170, 170, 190)
         end
     end)
     return btn
 end
 
-local function createSection(tabName, titleText)
+-- Функция для красивого бокового разделения во вкладках
+local function createSideHeader(tabName, titleText, accentColor)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, -5, 0, 26)
+    container.BackgroundTransparency = 1
+    container.Parent = pages[tabName].Page
+
+    local bar = Instance.new("Frame")
+    bar.Size = UDim2.new(0, 3, 0, 14)
+    bar.Position = UDim2.new(0, 0, 0.5, -7)
+    bar.BackgroundColor3 = accentColor
+    bar.BorderSizePixel = 0
+    bar.Parent = container
+
+    local barCorner = Instance.new("UICorner")
+    barCorner.CornerRadius = UDim.new(1, 0)
+    barCorner.Parent = bar
+
     local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(1, -5, 0, 22)
+    lbl.Size = UDim2.new(1, -12, 1, 0)
+    lbl.Position = UDim2.new(0, 10, 0, 0)
     lbl.BackgroundTransparency = 1
-    lbl.Text = "  " .. titleText:upper()
-    lbl.TextColor3 = Color3.fromRGB(90, 85, 120)
-    lbl.TextSize = 11
+    lbl.Text = titleText:upper()
+    lbl.TextColor3 = accentColor
+    lbl.TextSize = 10
     lbl.Font = Enum.Font.GothamBold
     lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Parent = pages[tabName].Page
+    lbl.Parent = container
 end
 
 createButton("ESP", "ESP: ON", true, function(btn)
@@ -274,15 +292,15 @@ createButton("ESP", "Coin ESP: OFF", false, function(btn)
     return coinEspEnabled
 end)
 
--- РАЗДЕЛЕНИЕ COMBAT НА SHERIFF И MURDERER
-createSection("COMBAT", "Sheriff")
+-- РАЗДЕЛЕНИЕ COMBAT С БОКОВЫМИ ИНДИКАТОРАМИ (Синий для Sheriff, Красный для Murderer)
+createSideHeader("COMBAT", "Sheriff", Color3.fromRGB(80, 140, 255))
 createButton("COMBAT", "Hitboxes: OFF", false, function(btn)
     hitboxEnabled = not hitboxEnabled
     btn.Text = hitboxEnabled and "Hitboxes: ON" or "Hitboxes: OFF"
     return hitboxEnabled
 end)
 
-createSection("COMBAT", "Murderer")
+createSideHeader("COMBAT", "Murderer", Color3.fromRGB(255, 70, 70))
 createButton("COMBAT", "Aimbot (Coming Soon)", false, function() end)
 
 createButton("VISUAL", "X-Ray: OFF", false, function(btn)
