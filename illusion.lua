@@ -353,8 +353,6 @@ local function applyESP(player)
             end
             
             highlight.Enabled = espEnabled
-            
-            -- Billboard активен, если включено хотя бы что-то из текстовой информации
             billboard.Enabled = namesEnabled or distanceEnabled
 
             local role, color = getRole(player)
@@ -453,63 +451,7 @@ RunService.Heartbeat:Connect(function()
         end
     end
 
-    local gunIsPickedUp = false
-    if not gunEspEnabled then
-        gunIsPickedUp = true
-    else
-        for _, p in ipairs(Players:GetPlayers()) do
-            local char = p.Character
-            local bp = p:FindFirstChildOfClass("Backpack")
-            if (char and (char:FindFirstChild("Gun") or char:FindFirstChild("Revolver"))) or 
-               (bp and (bp:FindFirstChild("Gun") or bp:FindFirstChild("Revolver"))) then
-                gunIsPickedUp = true
-                break
-            end
-        end
-    end
-
     for _, obj in ipairs(Workspace:GetDescendants()) do
-        if obj.Name == "Gun" or obj.Name == "Revolver" then
-            if gunEspEnabled and not gunIsPickedUp then
-                if not obj:FindFirstChild("GunHighlight") and (obj:IsA("Model") or obj:IsA("BasePart")) then
-                    local gunHighlight = Instance.new("Highlight")
-                    gunHighlight.Name = "GunHighlight"
-                    gunHighlight.Adornee = obj
-                    gunHighlight.FillColor = Color3.fromRGB(255, 255, 0)
-                    gunHighlight.FillTransparency = 0.3
-                    gunHighlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                    gunHighlight.Parent = obj
-
-                    local partToAdorn = obj:IsA("Model") and obj.PrimaryPart or obj
-                    if partToAdorn then
-                        local billboard = Instance.new("BillboardGui")
-                        billboard.Name = "GunTag"
-                        billboard.Adornee = partToAdorn
-                        billboard.Size = UDim2.new(0, 80, 0, 30)
-                        billboard.StudsOffset = Vector3.new(0, 2, 0)
-                        billboard.AlwaysOnTop = true
-
-                        local txt = Instance.new("TextLabel")
-                        txt.Size = UDim2.new(1, 0, 1, 0)
-                        txt.BackgroundTransparency = 1
-                        txt.TextScaled = true
-                        txt.Font = Enum.Font.SourceSansBold
-                        txt.Text = "GUN"
-                        txt.TextColor3 = Color3.fromRGB(255, 255, 0)
-                        txt.TextStrokeTransparency = 0
-                        txt.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-                        txt.Parent = billboard
-                        billboard.Parent = obj
-                    end
-                end
-            else
-                local hl = obj:FindFirstChild("GunHighlight")
-                if hl then hl:Destroy() end
-                local tag = obj:FindFirstChild("GunTag")
-                if tag then tag:Destroy() end
-            end
-        end
-
         if obj.Name == "Coin_Server" or obj.Name:lower():find("coin") or obj.Name:lower():find("idiot") then
             if coinEspEnabled then
                 if not obj:FindFirstChild("CoinHighlight") and (obj:IsA("Model") or obj:IsA("BasePart")) then
