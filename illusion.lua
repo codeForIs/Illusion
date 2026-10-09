@@ -47,8 +47,8 @@ openStroke.Parent = openButton
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 520, 0, 350)
-mainFrame.Position = UDim2.new(0.5, -260, 0.5, -175)
+mainFrame.Size = UDim2.new(0, 540, 0, 360)
+mainFrame.Position = UDim2.new(0.5, -270, 0.5, -180)
 mainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 13)
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
@@ -197,18 +197,18 @@ openButton.MouseButton1Click:Connect(function()
     mainFrame.Visible = true
     openButton.Visible = false
 end)
-local function createButton(tabName, text, defaultState, callback)
+local function createButton(parent, text, defaultState, callback)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -5, 0, 40)
+    btn.Size = UDim2.new(1, 0, 0, 38)
     btn.BackgroundColor3 = Color3.fromRGB(15, 14, 19)
     btn.TextColor3 = defaultState and Color3.fromRGB(138, 115, 255) or Color3.fromRGB(175, 175, 195)
-    btn.TextSize = 12
+    btn.TextSize = 11
     btn.Font = Enum.Font.GothamMedium
     btn.Text = text
-    btn.Parent = pages[tabName].Page
+    btn.Parent = parent
 
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
+    corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = btn
 
     local stroke = Instance.new("UIStroke")
@@ -226,98 +226,107 @@ local function createButton(tabName, text, defaultState, callback)
     return btn
 end
 
--- Красивый заголовок с акцентом (теперь можно делать сбоку в виде карточки/метки)
-local function createSectionWithBadge(tabName, titleText, badgeText, accentColor)
-    local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -5, 0, 30)
-    container.BackgroundTransparency = 1
-    container.Parent = pages[tabName].Page
-
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(0.6, 0, 1, 0)
-    lbl.Position = UDim2.new(0, 4, 0, 0)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = titleText:upper()
-    lbl.TextColor3 = accentColor
-    lbl.TextSize = 11
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Parent = container
-
-    -- Тот самый стильный боковой тег (Badge) для разделения ролей
-    local badge = Instance.new("Frame")
-    badge.Size = UDim2.new(0, 75, 0, 20)
-    badge.Position = UDim2.new(1, -75, 0.5, -10)
-    badge.BackgroundColor3 = Color3.fromRGB(18, 16, 25)
-    badge.Parent = container
-
-    local bCorner = Instance.new("UICorner")
-    bCorner.CornerRadius = UDim.new(0, 6)
-    bCorner.Parent = badge
-
-    local bStroke = Instance.new("UIStroke")
-    bStroke.Color = accentColor
-    bStroke.Thickness = 1
-    bStroke.Parent = badge
-
-    local bText = Instance.new("TextLabel")
-    bText.Size = UDim2.new(1, 0, 1, 0)
-    bText.BackgroundTransparency = 1
-    bText.Text = badgeText
-    bText.TextColor3 = accentColor
-    bText.TextSize = 9
-    bText.Font = Enum.Font.GothamBold
-    bText.Parent = badge
+local function createStandardButton(tabName, text, defaultState, callback)
+    return createButton(pages[tabName].Page, text, defaultState, callback)
 end
 
-createButton("ESP", "ESP: ON", true, function(btn)
+createStandardButton("ESP", "ESP: ON", true, function(btn)
     espEnabled = not espEnabled
     btn.Text = espEnabled and "ESP: ON" or "ESP: OFF"
     return espEnabled
 end)
 
-createButton("ESP", "Names: ON", true, function(btn)
+createStandardButton("ESP", "Names: ON", true, function(btn)
     namesEnabled = not namesEnabled
     btn.Text = namesEnabled and "Names: ON" or "Names: OFF"
     return namesEnabled
 end)
 
-createButton("ESP", "Distance: OFF", false, function(btn)
+createStandardButton("ESP", "Distance: OFF", false, function(btn)
     distanceEnabled = not distanceEnabled
     btn.Text = distanceEnabled and "Distance: ON" or "Distance: OFF"
     return distanceEnabled
 end)
 
-createButton("ESP", "Boxes: OFF", false, function(btn)
+createStandardButton("ESP", "Boxes: OFF", false, function(btn)
     boxEnabled = not boxEnabled
     btn.Text = boxEnabled and "Boxes: ON" or "Boxes: OFF"
     return boxEnabled
 end)
 
-createButton("ESP", "Tracers: OFF", false, function(btn)
+createStandardButton("ESP", "Tracers: OFF", false, function(btn)
     tracersEnabled = not tracersEnabled
     btn.Text = tracersEnabled and "Tracers: ON" or "Tracers: OFF"
     return tracersEnabled
 end)
 
-createButton("ESP", "Coin ESP: OFF", false, function(btn)
+createStandardButton("ESP", "Coin ESP: OFF", false, function(btn)
     coinEspEnabled = not coinEspEnabled
     btn.Text = coinEspEnabled and "Coin ESP: ON" or "Coin ESP: OFF"
     return coinEspEnabled
 end)
 
--- РАЗДЕЛЕНИЕ СО ВКЛАДКОЙ COMBAT (Sheriff и Murderer с боковым тегом)
-createSectionWithBadge("COMBAT", "Sheriff Module", "GUN", Color3.fromRGB(90, 150, 255))
-createButton("COMBAT", "Hitboxes: OFF", false, function(btn)
+-- РАЗДЕЛЕНИЕ COMBAT НА ДВЕ КОЛОНКИ РЯДОМ: SHERIFF | MURDER
+local combatPage = pages["COMBAT"].Page
+
+local combatContainer = Instance.new("Frame")
+combatContainer.Size = UDim2.new(1, -5, 0, 260)
+combatContainer.BackgroundTransparency = 1
+combatContainer.Parent = combatPage
+
+-- Левая колонка: SHERIFF
+local sheriffColumn = Instance.new("ScrollingFrame")
+sheriffColumn.Size = UDim2.new(0.48, 0, 1, 0)
+sheriffColumn.Position = UDim2.new(0, 0, 0, 0)
+sheriffColumn.BackgroundTransparency = 1
+sheriffColumn.ScrollBarThickness = 2
+sheriffColumn.Parent = combatContainer
+
+local sheriffLayout = Instance.new("UIListLayout")
+sheriffLayout.SortOrder = Enum.SortOrder.LayoutOrder
+sheriffLayout.Padding = UDim.new(0, 8)
+sheriffLayout.Parent = sheriffColumn
+
+local sheriffHeader = Instance.new("TextLabel")
+sheriffHeader.Size = UDim2.new(1, 0, 0, 24)
+sheriffHeader.BackgroundTransparency = 1
+sheriffHeader.Text = "SHERIFF"
+sheriffHeader.TextColor3 = Color3.fromRGB(90, 150, 255)
+sheriffHeader.TextSize = 12
+sheriffHeader.Font = Enum.Font.GothamBold
+sheriffHeader.Parent = sheriffColumn
+
+createButton(sheriffColumn, "Hitboxes: OFF", false, function(btn)
     hitboxEnabled = not hitboxEnabled
     btn.Text = hitboxEnabled and "Hitboxes: ON" or "Hitboxes: OFF"
     return hitboxEnabled
 end)
 
-createSectionWithBadge("COMBAT", "Murderer Module", "KNIFE", Color3.fromRGB(255, 75, 75))
-createButton("COMBAT", "Aimbot (Coming Soon)", false, function() end)
+-- Правая колонка: MURDER
+local murderColumn = Instance.new("ScrollingFrame")
+murderColumn.Size = UDim2.new(0.48, 0, 1, 0)
+murderColumn.Position = UDim2.new(0.52, 0, 0, 0)
+murderColumn.BackgroundTransparency = 1
+murderColumn.ScrollBarThickness = 2
+murderColumn.Parent = combatContainer
 
-createButton("VISUAL", "X-Ray: OFF", false, function(btn)
+local murderLayout = Instance.new("UIListLayout")
+murderLayout.SortOrder = Enum.SortOrder.LayoutOrder
+murderLayout.Padding = UDim.new(0, 8)
+murderLayout.Parent = murderColumn
+
+local murderHeader = Instance.new("TextLabel")
+murderHeader.Size = UDim2.new(1, 0, 0, 24)
+murderHeader.BackgroundTransparency = 1
+murderHeader.Text = "MURDER"
+murderHeader.TextColor3 = Color3.fromRGB(255, 75, 75)
+murderHeader.TextSize = 12
+murderHeader.Font = Enum.Font.GothamBold
+murderHeader.Parent = murderColumn
+
+createButton(murderColumn, "Aimbot (Coming Soon)", false, function() end)
+
+createStandardButton("VISUAL", "X-Ray: OFF", false, function(btn)
     xrayEnabled = not xrayEnabled
     btn.Text = xrayEnabled and "X-Ray: ON" or "X-Ray: OFF"
     
@@ -339,9 +348,9 @@ createButton("VISUAL", "X-Ray: OFF", false, function(btn)
     return xrayEnabled
 end)
 
-createButton("PLAYER", "Speed Boost (Coming Soon)", false, function() end)
-createButton("ANIMATIONS", "Custom Anim (Coming Soon)", false, function() end)
-createButton("SETTINGS", "Rejoin Server", false, function()
+createStandardButton("PLAYER", "Speed Boost (Coming Soon)", false, function() end)
+createStandardButton("ANIMATIONS", "Custom Anim (Coming Soon)", false, function() end)
+createStandardButton("SETTINGS", "Rejoin Server", false, function()
     game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
 end)
 local function getRole(player)
