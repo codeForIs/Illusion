@@ -274,7 +274,7 @@ createButton("VISUAL", "X-Ray: OFF", false, function(btn)
 end)
 
 createButton("COMBAT", "Aimbot (Coming Soon)", false, function() end)
-createButton("PLAYER", "Speed Boost (Coming Soon)", false, function() end)
+createButton("PLAYER", "Speed Boost (ComingSoon)", false, function() end)
 createButton("ANIMATIONS", "Custom Anim (Coming Soon)", false, function() end)
 createButton("SETTINGS", "Rejoin Server", false, function()
     game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
@@ -288,20 +288,27 @@ local function getRole(player)
     local hasGun = false
     local hasKnife = false
 
-    -- Глубокая проверка рюкзака и персонажа на наличие оружия (срабатывает сразу на 10-секундном таймере)
+    local function checkItem(item)
+        if item:IsA("Tool") then
+            local n = item.Name:lower()
+            -- Четкая проверка на наличие конкретного оружия мурдерера или шерифа
+            if n == "knife" or n:find("knife") then
+                hasKnife = true
+            elseif n == "gun" or n == "revolver" or n:find("gun") or n:find("revolver") then
+                hasGun = true
+            end
+        end
+    end
+
     if backpack then
         for _, item in ipairs(backpack:GetChildren()) do
-            local name = item.Name:lower()
-            if name:find("gun") or name:find("revolver") then hasGun = true end
-            if name:find("knife") then hasKnife = true end
+            checkItem(item)
         end
     end
 
     if character then
         for _, item in ipairs(character:GetChildren()) do
-            local name = item.Name:lower()
-            if name:find("gun") or name:find("revolver") then hasGun = true end
-            if name:find("knife") then hasKnife = true end
+            checkItem(item)
         end
     end
     
